@@ -3,30 +3,58 @@
 
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=Cp1252">
-			<title>Brewery Application</title>
+			<title>Distilled SCH Beer Application</title>
 			
 	</head>
 	
 	<body>
-		<h1>Title</h1>
+		<h1>Distilled SCH Beer Application</h1>
     		<?php
-    		require 'Brewerydb.php';
-    		require 'Exception.php';
+    			require_once 'BreweryConnector.php';
+    			
+    			$bcDB = 		new BreweryConnector();
+    			$rndmBeerObj = 		$bcDB->randombeer();
+    			$beerName = 		$rndmBeerObj->data->name;
+    			$beerImg = 			$rndmBeerObj->data->labels->medium;
+    			$beerDesc =			$rndmBeerObj->data->style->description;
+    			$breweryArray = 	$rndmBeerObj->data->breweries;
+    			
     		
-    		$bdbAPIKey = '330f3fed202e64abba35e7251844a056';
-    		$randomAPIUrl = 'beer/random';
-    		$randomBeerParams = array('hasLabels=Y','withBreweries=Y');
-			$randomBeerCall = new Pintlabs_Service_Brewerydb($bdbAPIKey);
-			$randomBeerCall->setFormat('php');
+			?> 
 			
-			try {
-				$results = $randomBeerCall->request('beers', $params, 'GET');
-			} catch (Exception $e) {
-				$results = array('error' => $e->getMessage());
+			
+		<h1 id="beerName"><?php echo $beerName;?></h1>
+		<img id="beerImg" alt="" src="<?php echo $beerImg;?>"></img>
+		<p id="beerDesc"><?php echo $beerDesc;?></p>
+		<p><?php echo $breweryArray->id;?></p>
+		<button type="button" onclick="anotherBeer()">Another Beer</button>
+		
+		<button type="button" onclick="displayBrewerBeers()">More from this Brewer</button>
+
+		<script>
+			function anotherBeer() {
+			
+				<?php
+				$newRndmBeerObj = 	$bcDB->randomBeer();
+				?>
+
+				document.getElementById("beerName").innerHTML = <?php echo '"'.$newRndmBeerObj->data->name.'"';?>;
+				document.getElementById("beerImg").src = <?php echo '"'.$newRndmBeerObj->data->labels->medium.'"';?>;
+    			document.getElementById("beerDesc").innerHTML = <?php echo '"'.$newRndmBeerObj->data->style->description.'"'?>;
+    			
 			}
+
+			function displayBrewerBeers(){
+					/* <?php $Brewer = $bcDB->brewerySearch($brewerID);
+					echo '<p>'.json_encode($Brewer).'</p>';
+					?> */
+							document.getElementById("here").innerHTML = "button works";
+				;
+				}
+			</script>
 			
-			echo $results->data;
 			
-			?>
+
+			
     </body>
 </html>
