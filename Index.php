@@ -11,48 +11,81 @@
 
 	
     $(document).ready(function(){
-    $('#randomButton').click(function() {
-        randomize();
+    $("#randomButton").click(function() {
+        randomBeer();
+    });
+
+    $("#moreFromBrewery").click(function() {
+    	breweryBeers();
     });
 
         //the first one
-        randomize();
+        randomBeer();
     });
 
 
-
-    function randomize()
+    function randomBeer()
     {
         $.ajax({
-            url: "BreweryConnector.php?action=random",
-            dataType: 'jsonp',
+            url: "BreweryConnector.php?action=randomBeer",
             success: function (result) {
                 $("#errorText").hide();
                 console.log(result);
+                var parsedResult = JSON.parse(result);
+                $("#beerLabel").attr("src", parsedResult.label);
+                $("#beerName").html(parsedResult.name);
+                $("#beerDesc").html(parsedResult.description);
+                $("#breweryID").hide();
+                $("#breweryID").html(parsedResult.breweryId);
             },
             error: function (result) {
                 console.log(result);
-                $("#errorText").html('An Error Occurred');
+                $("#errorText").html("An Error Occurred");
                 $("#errorText").show();
             }
         });
-        $("#randomText").html("Hello World " + Math.random());
-
     }
+        function breweryBeers()
+        {
+            $.ajax({
+
+                
+                url: "BreweryConnector.php?action=breweryBeers",
+                data: {brewerID : $("#breweryID").text()},
+                success: function (result) {
+                    $("#errorText").hide();
+                    console.log(result);
+                    var parsedResult = JSON.parse(result);
+                },
+                error: function (result) {
+                    console.log(result);
+                    $("#errorText").html("An Error Occurred");
+                    $("#errorText").show();
+                }
+            });
+        }
+        
 
     </script>
     <body>
 
     <div>
 
-     <div id = 'errorText'>
+     <div id = "errorText">
             </div>
-    <div id = 'randomText'>
-
-    	</div>
+    <div id = "beerDetails">
+    	
+    	<h1 id="beerName"></h1>
+    	<img alt="" src="" id="beerLabel"></img>
+    	<a id="beerDesc"></a>
+    	<p id="breweryID"></p>
+    
+    </div>
+    
         
         <div>
-            <button id="randomButton" class="ui-button ui-widget ui-corner-all">Randomise</button>
+            <button id="randomButton" class="ui-button ui-widget ui-corner-all">Another Beer</button>
+            <button id="moreFromBrewery" class="ui-button ui-widget ui-corner-all">More From this Brewery</button>
         </div>
     </div>
 
