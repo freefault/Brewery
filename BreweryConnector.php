@@ -15,7 +15,7 @@
 
 	public function getRndmBeer(){
 		$fullAPIResponse = $this->requestRndmBeerFromAPI();
-		$beerInfo = $this->formatAPIResponse($fullAPIResponse);
+		$beerInfo = $this->formatSingleBeerAPIResponse($fullAPIResponse);
 		return json_encode($beerInfo);
 	}
 
@@ -28,7 +28,7 @@
 		
 	}
 	
-	private function formatAPIResponse($fullAPIResponse){
+	private function formatSingleBeerAPIResponse($fullAPIResponse){
 		
 		$beerInfo = json_decode($fullAPIResponse);
 		$output['name'] = $beerInfo->data->name;
@@ -41,16 +41,33 @@
 		return $output;
 	}
 	
+	private function formatMultipleBeerAPIResponse($fullAPIResponse){
+		
+		$beerInfo = json_decode($fullAPIResponse);
+		
+		foreach ($beerInfo as $x => $x_value){
+		
+		$output['name'] = $beerInfo->data->name;
+		$output['description'] = $beerInfo->data->description;
+		$output['label'] = $beerInfo->data->labels->medium;
+/* 		$breweries = $beerInfo->data->breweries;
+		$first = reset($breweries);
+		$output['breweryId'] = $first->id;
+		$output['breweryName'] = $first->name; */
+		}
+		return $output;
+	}
+	
 	public function getbreweryBeers($brewerID){
 		$fullResponse = $this->requestBreweryBeerSearchFromAPI($brewerID);
-		$beerDetails = $this->formatDetails($fullResponse);
-		return $beerDetails;
+		$beerDetails = $this->formatMultipleBeerAPIResponse($fullResponse);
+		return json_encode($beerDetails);
 	}
 	
 	private function requestBreweryBeerSearchFromAPI($brewerID){
-		$brewerParam = '/brewery';
+		$brewerParam = '/brewery/';
 		$beersParam = '/beers/';
-		$url = $this->getBaseURL().$brewerParam.$brewerID.$beersParam.$this->getKey;
+		$url = $this->getBaseURL().$brewerParam.$brewerID.$beersParam.$this->getKey();
 		$response = file_get_contents($url);
 		return $response;
 			
@@ -76,7 +93,7 @@
 
 	switch($action) {
 		case 'breweryBeers':
-		$brewerID = echo $_GET['brewerID'];
+		$brewerID = $_GET['brewerID'];
 		$brewerBeers = new BreweryConnector();
 		$response = $brewerBeers->getbreweryBeers($brewerID);
 		echo $response;

@@ -54,8 +54,14 @@
                 data: {brewerID : $("#breweryID").text()},
                 success: function (result) {
                     $("#errorText").hide();
-                    console.log(result);
-                    var parsedResult = JSON.parse(result);
+					/* console.log(result); */
+                    $("#searchedBeerLabel").attr("src", result.label);
+                    console.log("Label assigned");
+                    $("#searchedBeerName").html(result.name);
+                    console.log("Name assigned");
+                    $("#searchedBeerDesc").html(result.description);
+                    console.log("Desc assigned");
+                    console.log("Call worked");
                 },
                 error: function (result) {
                     console.log(result);
@@ -81,7 +87,13 @@
     	<p id="breweryID"></p>
     
     </div>
+    <div id = "searchedBeerDetails">
+    	
+    	<h1 id="searchedBeerName"></h1>
+    	<img alt="" src="" id="searchedBeerLabel"></img>
+    	<a id="searchedBeerDesc"></a>
     
+    </div>    
         
         <div>
             <button id="randomButton" class="ui-button ui-widget ui-corner-all">Another Beer</button>
