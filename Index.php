@@ -6,55 +6,56 @@
 			<title>Distilled SCH Beer Application</title>
 			
 	</head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script>
+
 	
-	<body>
-		<h1>Distilled SCH Beer Application</h1>
-    		<?php
-    			require_once 'BreweryConnector.php';
-    			
-    			$bcDB = 		new BreweryConnector();
-    			$rndmBeerObj = 		$bcDB->randombeer();
-    			$beerName = 		$rndmBeerObj->data->name;
-    			$beerImg = 			$rndmBeerObj->data->labels->medium;
-    			$beerDesc =			$rndmBeerObj->data->style->description;
-    			$breweryArray = 	$rndmBeerObj->data->breweries;
-    			
-    		
-			?> 
-			
-			
-		<h1 id="beerName"><?php echo $beerName;?></h1>
-		<img id="beerImg" alt="" src="<?php echo $beerImg;?>"></img>
-		<p id="beerDesc"><?php echo $beerDesc;?></p>
-		<p><?php echo $breweryArray->id;?></p>
-		<button type="button" onclick="anotherBeer()">Another Beer</button>
-		
-		<button type="button" onclick="displayBrewerBeers()">More from this Brewer</button>
+    $(document).ready(function(){
+    $('#randomButton').click(function() {
+        randomize();
+    });
 
-		<script>
-			function anotherBeer() {
-			
-				<?php
-				$newRndmBeerObj = 	$bcDB->randomBeer();
-				?>
+        //the first one
+        randomize();
+    });
 
-				document.getElementById("beerName").innerHTML = <?php echo '"'.$newRndmBeerObj->data->name.'"';?>;
-				document.getElementById("beerImg").src = <?php echo '"'.$newRndmBeerObj->data->labels->medium.'"';?>;
-    			document.getElementById("beerDesc").innerHTML = <?php echo '"'.$newRndmBeerObj->data->style->description.'"'?>;
-    			
-			}
 
-			function displayBrewerBeers(){
-					/* <?php $Brewer = $bcDB->brewerySearch($brewerID);
-					echo '<p>'.json_encode($Brewer).'</p>';
-					?> */
-							document.getElementById("here").innerHTML = "button works";
-				;
-				}
-			</script>
-			
-			
 
-			
+    function randomize()
+    {
+        $.ajax({
+            url: "BreweryConnector.php?action=random",
+            dataType: 'jsonp',
+            success: function (result) {
+                $("#errorText").hide();
+                console.log(result);
+            },
+            error: function (result) {
+                console.log(result);
+                $("#errorText").html('An Error Occurred');
+                $("#errorText").show();
+            }
+        });
+        $("#randomText").html("Hello World " + Math.random());
+
+    }
+
+    </script>
+    <body>
+
+    <div>
+
+     <div id = 'errorText'>
+            </div>
+    <div id = 'randomText'>
+
+    	</div>
+        
+        <div>
+            <button id="randomButton" class="ui-button ui-widget ui-corner-all">Randomise</button>
+        </div>
+    </div>
+
+
     </body>
 </html>
