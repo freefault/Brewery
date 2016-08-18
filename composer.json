@@ -1,0 +1,14 @@
+{
+  "name": "freefault/Brewery",
+  "description": "Brewery API Connectior",
+  "authors": [
+    {
+      "name": "Jack Hollingsworth",
+      "email": "me@gmail.com"
+    }
+  ],
+  "require": {},
+  "require-dev": {
+    "phpunit/phpunit": "4.0.*"
+  }
+}

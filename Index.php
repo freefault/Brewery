@@ -1,13 +1,14 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN">
 <html>
 
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=Cp1252">
-			<title>Distilled SCH Beer Application</title>
-			
-	</head>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
-	<script>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Cp1252">
+<title>Distilled SCH Beer Application</title>
+
+</head>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script>
 
 	
     $(document).ready(function(){
@@ -27,7 +28,7 @@
     function randomBeer()
     {
         $.ajax({
-            url: "BreweryConnector.php?action=randomBeer",
+            url: "ajax.php?action=randomBeer",
             success: function (result) {
                 $("#errorText").hide();
                 console.log(result);
@@ -50,18 +51,22 @@
             $.ajax({
 
                 
-                url: "BreweryConnector.php?action=breweryBeers",
+                url: "ajax.php?action=breweryBeers",
                 data: {brewerID : $("#breweryID").text()},
                 success: function (result) {
                     $("#errorText").hide();
-					/* console.log(result); */
-                    $("#searchedBeerLabel").attr("src", result.label);
-                    console.log("Label assigned");
-                    $("#searchedBeerName").html(result.name);
-                    console.log("Name assigned");
-                    $("#searchedBeerDesc").html(result.description);
-                    console.log("Desc assigned");
-                    console.log("Call worked");
+                    var parsedResult = JSON.parse(result);
+                    $("#searchedBeerDetails").empty();
+                    for (i= 0; i < parsedResult.length; i++){
+                    console.log(parsedResult[i].name);
+                    $("#searchedBeerDetails").append("<p id='Beer_" + i + "'>" + parsedResult[i].name + "</p>");
+                    if(parsedResult[i].description !== null)
+                    $("#searchedBeerDetails").append("<p id='Beer_" + i + "'>" + parsedResult[i].description + "</p>");
+                    if(parsedResult[i].label !== null)
+                    $("#searchedBeerDetails").append("<img id='Beer_" + i + "' src='>" + parsedResult[i].label + "'</p>");
+                    
+					}
+
                 },
                 error: function (result) {
                     console.log(result);
@@ -73,34 +78,43 @@
         
 
     </script>
-    <body>
+<body>
 
-    <div>
+	<div>
 
-     <div id = "errorText">
-            </div>
-    <div id = "beerDetails">
-    	
-    	<h1 id="beerName"></h1>
-    	<img alt="" src="" id="beerLabel"></img>
-    	<a id="beerDesc"></a>
-    	<p id="breweryID"></p>
-    
-    </div>
-    <div id = "searchedBeerDetails">
-    	
-    	<h1 id="searchedBeerName"></h1>
-    	<img alt="" src="" id="searchedBeerLabel"></img>
-    	<a id="searchedBeerDesc"></a>
-    
-    </div>    
-        
-        <div>
-            <button id="randomButton" class="ui-button ui-widget ui-corner-all">Another Beer</button>
-            <button id="moreFromBrewery" class="ui-button ui-widget ui-corner-all">More From this Brewery</button>
-        </div>
-    </div>
+		<div id="errorText"></div>
+		<div id="beerDetails">
+
+			<h1 id="beerName"></h1>
+			<img alt="" src="" id="beerLabel"></img> <a id="beerDesc"></a>
+			<p id="breweryID"></p>
+
+		</div>
 
 
-    </body>
+		<div id="buttons">
+			<button id="randomButton" class="ui-button ui-widget ui-corner-all">Another
+				Beer</button>
+			<button id="moreFromBrewery" 
+					class="ui-button ui-widget ui-corner-all">More From this Brewery</button>
+				</div>
+		<div>
+		<form action="">
+			<input type="text" id="searchQuery"></input>
+			<input type="radio" name="SearchRadio" value="Brewery" checked="checked">Brewery</input>
+			<input type="radio" name="SearchRadio" value="Beer">Beer</input>
+			<button id="search" 
+					class="ui-button ui-widget ui-corner-all">Search</button>
+					</form>
+		</div>
+	</div>
+
+	<div id="searchedBeerDetails">
+		<h1 id="searchedBeerName"></h1>
+		<img alt="" src="" id="searchedBeerLabel"></img> <a
+			id="searchedBeerDesc"></a>
+
+	</div>
+
+</body>
 </html>
