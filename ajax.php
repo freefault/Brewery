@@ -2,22 +2,32 @@
 
 require_once 'src/BreweryConnector.php';
 
-$action = $_REQUEST ['action'];
+if (isset($_REQUEST ['action'])) {
+  $action = $_REQUEST ['action'];
+} else {
+  throw new Exception('Action not set');
+}
 
 switch ($action) {
-	case 'randomBeer' :
-		$querier = new BreweryConnector ();
-		$response = $querier->getRndmBeer ();
-		echo $response;
-		break;
-	case 'breweryBeers' :
-		$brewerID = $_GET ['brewerID'];
-		$brewerBeers = new BreweryConnector ();
-		$response = $brewerBeers->getbreweryBeers ( $brewerID );
-		echo $response;
-		break;
-	
-	default :
-		throw new Exception('No action found');
-		break;
+  case 'randomBeer' :
+    $connector = new BreweryConnector ();
+    $response = $connector->getRndmBeer ();
+    echo $response;
+    break;
+
+  case 'breweryBeers' :
+    if (isset($_GET ['brewerID'])) {
+      $brewerID = $_GET ['brewerID'];
+    } else {
+      throw new Exception('No brewer id set');
+    }
+
+    $connector = new BreweryConnector ();
+    $response = $connector->getbreweryBeers ( $brewerID );
+    echo $response;
+    break;
+
+  default :
+    throw new Exception('No good action found');
+    break;
 }
